@@ -9,7 +9,7 @@ const initialState = {
 };
 
 export default class Home extends Component {
-  componentWillMount = () => {
+  componentWillMount = async () => {
     let newState = this.props.location.state
       ? this.props.location.state
       : initialState;
@@ -20,14 +20,13 @@ export default class Home extends Component {
       loading: false,
       error: false,
     }));
+    if (!this.props.location.state) this.getEmployees();
   };
 
-  testAPI() {
-    this.setState(() => ({ loading: true }));
+  getEmployees = () => {
     axios({
       method: "GET",
       url: "http://localhost:3000/employees",
-      params: { q: this.state.query },
     })
       .then((res) => {
         this.setState(() => ({ employees: [...new Set([...res.data])] }));
@@ -38,7 +37,7 @@ export default class Home extends Component {
         if (axios.isCancel(err)) return;
         this.setState(() => ({ error: true }));
       });
-  }
+  };
 
   removeEmployee = (employee) => {
     this.setState((state) => ({
@@ -53,9 +52,8 @@ export default class Home extends Component {
     }));
   };
 
-  handleSearch = async (q) => {
-    await this.setState({ query: q.target.value });
-    this.testAPI();
+  handleSearch = (q) => {
+    this.setState({ query: q.target.value });
   };
 
   getFilteredEmployees = () => {
@@ -67,21 +65,21 @@ export default class Home extends Component {
   };
 
   render() {
-    const { query } = this.state;
+    const { loading } = this.state;
     return (
       <div className="list-employees">
         <div className="list-employees-top"></div>
         <div className="showing-employees">
           <div className="list-employees-toolbar">
-            <input value={query} onChange={this.handleSearch} />
+            <input onChange={this.handleSearch} />
             <Link to={{ pathname: "/add", state: this.state }}>
               Add Employee
             </Link>
           </div>
-          {this.state.loading && <div>Loading..</div>}
-          {!this.state.loading && (
+          {loading && <div>Loading...</div>}
+          {!loading && (
             <ol className="employee-list">
-              {this.state.employees.map((employee) => (
+              {this.getFilteredEmployees().map((employee) => (
                 <EmployeeItem
                   employee={employee}
                   onDeleteEmployee={this.removeEmployee}

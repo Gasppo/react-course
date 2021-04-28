@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { EditForm } from "./components/EditForm";
 
 class EmployeeEdit extends Component {
@@ -45,7 +45,10 @@ class EmployeeEdit extends Component {
     return redirect ? (
       <Redirect to={{ pathname: "/", state: this.state }} />
     ) : (
-      <EditForm onSubmit={this.handleSubmit} employee={editedEmployee} />
+      <div>
+        <EditForm onSubmit={this.handleSubmit} employee={editedEmployee} />
+        <Link to={{ pathname: "/", state: this.state }}>Back</Link>
+      </div>
     );
   }
 }

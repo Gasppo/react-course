@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Redirect } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { CreateForm } from "./components/CreateForm";
 
 class EmployeeAdd extends Component {
@@ -30,7 +30,10 @@ class EmployeeAdd extends Component {
     return redirect ? (
       <Redirect to={{ pathname: "/", state: this.state }} />
     ) : (
-      <CreateForm onSubmit={this.handleSubmit} />
+      <div>
+        <CreateForm onSubmit={this.handleSubmit} />
+        <Link to={{ pathname: "/", state: this.state }}>Back</Link>
+      </div>
     );
   }
 }
