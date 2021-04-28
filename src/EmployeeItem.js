@@ -1,5 +1,9 @@
 import React from "react";
-import { CustomStyledLi } from "./components/CustomStyles";
+import {
+  CustomStyledLi,
+  EditButton,
+  RemoveButton,
+} from "./components/CustomStyles";
 
 export const EmployeeItem = ({
   employee,
@@ -8,16 +12,16 @@ export const EmployeeItem = ({
 }) => {
   return (
     <div>
-      <CustomStyledLi key={employee.id} className="list-employees">
+      <CustomStyledLi key={employee.id} className="employees-list-item">
         <div className="employee-details">
           <p>{employee.name}</p>
           <p>{employee.position}</p>
           <p>{employee.salary}</p>
         </div>
-        <RemoveButton onClick={() => onDeleteEmployee(employee)}>
-          Delete
-        </RemoveButton>
-        <button onClick={() => onEditEmployee(employee)}>Edit </button>
+        <div className="list-buttons">
+          <RemoveButton onClick={() => onDeleteEmployee(employee)} />
+          <EditButton onClick={() => onEditEmployee(employee)} />
+        </div>
       </CustomStyledLi>
     </div>
   );

@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import removeButton from "./icons/cancel.svg";
+import removeButton from "../icons/cancel.svg";
+import edditButton from "../icons/edit.svg";
 
 export const RemoveButton = styled.button`
   padding-left: 20px;
@@ -14,7 +15,22 @@ export const RemoveButton = styled.button`
   font-size: 0;
   vertical-align: middle;
   cursor: pointer;
-  outline: none;
+`;
+
+export const EditButton = styled.button`
+  padding-left: 20px;
+  align-self: center;
+  width: 28px;
+  height: 28px;
+  margin-bottom: 3px;
+  background-color: transparent;
+  background-image: url("${edditButton}");
+  background-size: 100% 100%;
+  border: 0;
+  color: black;
+  font-size: 0;
+  vertical-align: middle;
+  cursor: pointer;
 `;
 
 export const size = {

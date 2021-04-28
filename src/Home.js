@@ -38,10 +38,6 @@ export default class Home extends Component {
     }));
   };
 
-  componentDidUpdate() {
-    console.log("updated");
-  }
-
   removeEmployee = (employee) => {
     this.setState((state) => ({
       employees: state.employees.filter((c) => c.id !== employee.id),
@@ -69,18 +65,25 @@ export default class Home extends Component {
 
   render() {
     return (
-      <div style={{ margin: "10px" }}>
-        <input onChange={this.handleSearch}></input>
-        <Link to={{ pathname: "/add", state: this.state }}> Add Employee</Link>
-        <ol className="employees-list">
-          {this.getFilteredEmployees().map((employee) => (
-            <EmployeeItem
-              employee={employee}
-              onDeleteEmployee={this.removeEmployee}
-              onEditEmployee={this.editEmployee}
-            />
-          ))}
-        </ol>
+      <div className="list-employees">
+        <div className="list-employees-top"></div>
+        <div className="showing-employees">
+          <div className="list-employees-toolbar">
+            <input onChange={this.handleSearch} />
+            <Link to={{ pathname: "/add", state: this.state }}>
+              Add Employee
+            </Link>
+          </div>
+          <ol className="employee-list">
+            {this.getFilteredEmployees().map((employee) => (
+              <EmployeeItem
+                employee={employee}
+                onDeleteEmployee={this.removeEmployee}
+                onEditEmployee={this.editEmployee}
+              />
+            ))}
+          </ol>
+        </div>
         {this.state.redirectEdit && (
           <Redirect
             to={{
