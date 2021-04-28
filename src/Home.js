@@ -1,28 +1,10 @@
+import axios from "axios";
 import React, { Component } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { EmployeeItem } from "./EmployeeItem";
 
 const initialState = {
-  employees: [
-    {
-      id: 1,
-      name: "Luke",
-      position: "dev",
-      salary: 1000,
-    },
-    {
-      id: 2,
-      name: "David",
-      position: "sales",
-      salary: 5000,
-    },
-    {
-      id: 3,
-      name: "David",
-      position: "CEO",
-      salary: 50000000,
-    },
-  ],
+  employees: [],
   nextId: 4,
 };
 
@@ -35,8 +17,28 @@ export default class Home extends Component {
       ...newState,
       query: "",
       redirectEdit: false,
+      loading: false,
+      error: false,
     }));
   };
+
+  testAPI() {
+    this.setState(() => ({ loading: true }));
+    axios({
+      method: "GET",
+      url: "http://localhost:3000/employees",
+      params: { q: this.state.query },
+    })
+      .then((res) => {
+        this.setState(() => ({ employees: [...new Set([...res.data])] }));
+        this.setState(() => ({ loading: false }));
+        console.log(res);
+      })
+      .catch((err) => {
+        if (axios.isCancel(err)) return;
+        this.setState(() => ({ error: true }));
+      });
+  }
 
   removeEmployee = (employee) => {
     this.setState((state) => ({
@@ -51,8 +53,9 @@ export default class Home extends Component {
     }));
   };
 
-  handleSearch = (q) => {
-    this.setState({ query: q.target.value });
+  handleSearch = async (q) => {
+    await this.setState({ query: q.target.value });
+    this.testAPI();
   };
 
   getFilteredEmployees = () => {
@@ -64,25 +67,29 @@ export default class Home extends Component {
   };
 
   render() {
+    const { query } = this.state;
     return (
       <div className="list-employees">
         <div className="list-employees-top"></div>
         <div className="showing-employees">
           <div className="list-employees-toolbar">
-            <input onChange={this.handleSearch} />
+            <input value={query} onChange={this.handleSearch} />
             <Link to={{ pathname: "/add", state: this.state }}>
               Add Employee
             </Link>
           </div>
-          <ol className="employee-list">
-            {this.getFilteredEmployees().map((employee) => (
-              <EmployeeItem
-                employee={employee}
-                onDeleteEmployee={this.removeEmployee}
-                onEditEmployee={this.editEmployee}
-              />
-            ))}
-          </ol>
+          {this.state.loading && <div>Loading..</div>}
+          {!this.state.loading && (
+            <ol className="employee-list">
+              {this.state.employees.map((employee) => (
+                <EmployeeItem
+                  employee={employee}
+                  onDeleteEmployee={this.removeEmployee}
+                  onEditEmployee={this.editEmployee}
+                />
+              ))}
+            </ol>
+          )}
         </div>
         {this.state.redirectEdit && (
           <Redirect
